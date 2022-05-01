@@ -27,6 +27,12 @@ def after_request(response):
     # Other headers can be added here if required
     return response
 
+@app.route("/login",methods=["GET"])
+def login():
+    token=request.args.get('token')
+    print(token)
+    return "Establishing endpoint"
+
 @app.route("/todo", methods=("GET", "POST"))
 def todo():
     # if request.method == "POST" :

@@ -24,3 +24,7 @@ tqdm==4.62.3
 urllib3==1.26.7
 Werkzeug==2.0.2
 sendgrid>=2.0.2
+pyjwt==2.3.0
+pyjwt[crypto]==2.3.0
+cryptography>=3.3.1,<4.0.0
+mongoengine==0.24.1

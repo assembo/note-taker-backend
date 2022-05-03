@@ -1,7 +1,11 @@
 from asyncio import constants
 import os
 
+from google.auth import jwt
 import openai
+import pymongo
+import json
+from pymongo import MongoClient
 from flask import Flask, redirect, render_template, request, url_for, jsonify
 # from flask_cors import CORS, cross_origin
 
@@ -10,6 +14,11 @@ from flask import Flask, redirect, render_template, request, url_for, jsonify
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from constants import ASSEMBO_CONTACT, sendgrid_templates
+
+cluster=MongoClient("mongodb+srv://SahilMaheshwari:sahil123@cluster1.ir5lh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",tls=True,
+                             tlsAllowInvalidCertificates=True)
+db=cluster["assembo"]
+collection=db["Users"]
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -29,9 +38,15 @@ def after_request(response):
 
 @app.route("/login",methods=["GET"])
 def login():
-    token=request.args.get('token')
-    print(token)
-    return "Establishing endpoint"
+    token= request.args.get('Authorization')
+    decoded_token=jwt.decode(token, verify=False)
+    useremail=decoded_token['email']
+    username=decoded_token['given_name']
+    userpicture=decoded_token['picture']
+    userData={"name":username,"email":useremail,"profilePicture":userpicture}
+    collection.insert_one(userData)
+    print(decoded_token)
+    return "Token is decoded"
 
 @app.route("/todo", methods=("GET", "POST"))
 def todo():

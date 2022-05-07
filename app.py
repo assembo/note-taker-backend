@@ -44,7 +44,7 @@ def login():
     username=decoded_token['given_name']
     userpicture=decoded_token['picture']
     userData={"name":username,"email":useremail,"profilePicture":userpicture}
-    collection.insert_one(userData)
+    result=collection.insert_one(userData)
     return "Token is decoded"
 
 @app.route("/todo", methods=("GET", "POST"))

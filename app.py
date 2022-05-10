@@ -29,13 +29,16 @@ def after_request(response):
 
 @app.route("/summary",methods=("GET", "POST"))
 def summarize():
-    animal = request.args.get('text')
+    transcript = request.args.get('summary')
     response = openai.Completion.create(
         engine="text-davinci-002",
-        prompt=generate_prompt(animal + '\ngenerate action items:'),
-        temperature=0.6,
-        max_tokens=500,
-    )
+        prompt=generate_prompt(transcript + "\ngenerate summarization in 10 words:"),
+        temperature=0.7,
+        max_tokens=64,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+        )
     return response.choices[0].text
 
 @app.route("/todo", methods=("GET", "POST"))
@@ -49,7 +52,7 @@ def todo():
         temperature=0.6,
         max_tokens=500,
     )
-    return response.choices[0].text
+    return response
 
 @app.route("/send_email", methods=("GET", "POST"))
 def send_email():

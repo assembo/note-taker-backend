@@ -27,14 +27,27 @@ def after_request(response):
     # Other headers can be added here if required
     return response
 
-@app.route("/todo", methods=("GET", "POST"))
-def todo():
+@app.route("/generateActionItems", methods=("GET", "POST"))
+def generateActionItems():
     # if request.method == "POST" :
     # animal = request.get_json(force=True)
     animal = request.args.get('text')
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=generate_prompt(animal + '\ngenerate action items:'),
+        temperature=0.6,
+        max_tokens=500,
+    )
+    return response.choices[0].text
+
+@app.route("/generateSummarization", methods=("GET", "POST"))
+def generateSummarization():
+    # if request.method == "POST" :
+    # animal = request.get_json(force=True)
+    transcript_line = request.args.get('text')
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=generate_prompt(transcript_line + '\ngenerate summarization under 10 words:'),
         temperature=0.6,
         max_tokens=500,
     )
